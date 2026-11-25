@@ -11,6 +11,6 @@ minecraft {
     mappings channel: 'official', version: '1.21.1'
 }
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.21.1-52.1.0'
+    minecraft 'net.minecraftforge:forge:1.21.1-52.1.9'
 }
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
