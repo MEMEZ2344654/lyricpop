@@ -56,17 +56,30 @@ public final class SettingsServer {
 
     public static void openInBrowser() {
         start();
+        String url = "http://localhost:" + PORT;
+
+        // Always show a clickable message in chat
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null) {
+            var link = net.minecraft.network.chat.Component.literal(url)
+                .withStyle(s -> s
+                    .withColor(net.minecraft.ChatFormatting.AQUA)
+                    .withUnderlined(true)
+                    .withClickEvent(new net.minecraft.network.chat.ClickEvent(
+                        net.minecraft.network.chat.ClickEvent.Action.OPEN_URL, url))
+                    .withHoverEvent(new net.minecraft.network.chat.HoverEvent(
+                        net.minecraft.network.chat.HoverEvent.Action.SHOW_TEXT,
+                        net.minecraft.network.chat.Component.literal("Click to open settings"))));
+
+            var msg = net.minecraft.network.chat.Component.literal("LyricPop settings: ").append(link);
+            mc.player.displayClientMessage(msg, false);
+        }
+
+        // Also try to open the browser automatically
         try {
-            Desktop.getDesktop().browse(new URI("http://localhost:" + PORT));
+            Desktop.getDesktop().browse(new URI(url));
         } catch (Exception e) {
-            // Fallback: just print the URL so the user can open it manually
-            System.out.println("[LyricPop] Open this in your browser: http://localhost:" + PORT);
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.player != null) {
-                mc.player.displayClientMessage(
-                    net.minecraft.network.chat.Component.literal("Open http://localhost:" + PORT + " in your browser"),
-                    false);
-            }
+            System.out.println("[LyricPop] Could not open browser automatically. Use the link in chat: " + url);
         }
     }
 

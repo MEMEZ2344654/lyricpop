@@ -74,7 +74,6 @@ final class ClientSetup {
         }
         while (settings.consumeClick()) {
             SettingsServer.openInBrowser();
-            msg(mc, "Opened LyricPop settings in browser");
         }
         while (earlier.consumeClick()) {
             Config.syncOffset = Math.min(3000, Config.syncOffset + 100);
