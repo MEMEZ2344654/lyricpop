@@ -20,5 +20,6 @@ That's pretty much it. Just a fun little mod if you like listening to music whil
 
 
 ( this mod was inspired to me by Lyrics By QQID and Melodify By aqys )
+
 https://www.curseforge.com/minecraft/mc-mods/lyrics
 https://modrinth.com/mod/melodify
