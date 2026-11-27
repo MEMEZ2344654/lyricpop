@@ -94,6 +94,10 @@ public final class Config {
     /** Positive = lyrics show earlier. */
     public static int syncOffset = 200;
 
+    // ---- content ----
+    /** Replace curse words with first+last letter and stars in the middle. */
+    public static boolean censorLyrics = true;
+
     private static final Map<String, Object> DEFAULTS = new HashMap<>();
     static {
         for (Field f : Config.class.getDeclaredFields()) {
@@ -107,7 +111,15 @@ public final class Config {
         return Modifier.isPublic(m) && Modifier.isStatic(m) && !Modifier.isFinal(m);
     }
 
-    private static Path path() { return Paths.get("config", "lyricpop.json"); }
+    private static Path path() {
+        // Always use the real Minecraft game directory (works with CurseForge, Prism, official launcher, etc.)
+        try {
+            return net.minecraft.client.Minecraft.getInstance().gameDirectory.toPath().resolve("config").resolve("lyricpop.json");
+        } catch (Exception e) {
+            // Fallback if called before Minecraft is ready
+            return Paths.get("config", "lyricpop.json");
+        }
+    }
 
     public static void reset() {
         for (Field f : Config.class.getDeclaredFields()) {

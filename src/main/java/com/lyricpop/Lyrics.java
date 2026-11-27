@@ -64,7 +64,9 @@ public final class Lyrics {
             if (!m.matches()) continue;
             long t = (long) ((Integer.parseInt(m.group(1)) * 60 + Double.parseDouble(m.group(2))) * 1000);
             times.add(new long[]{t});
-            texts.add(m.group(3).strip());
+            String lineText = m.group(3).strip();
+            if (Config.censorLyrics) lineText = LyricCensor.censor(lineText);
+            texts.add(lineText);
         }
         List<Line> out = new ArrayList<>();
         for (int i = 0; i < texts.size(); i++) {

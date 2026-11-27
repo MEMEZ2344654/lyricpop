@@ -73,6 +73,7 @@ public class SettingsScreen extends Screen {
                 o.add(toggle("Lyric pill", () -> Config.showPill, v -> Config.showPill = v));
                 o.add(toggle("Next line", () -> Config.showNextLine, v -> Config.showNextLine = v));
                 o.add(toggle("Progress line", () -> Config.showProgress, v -> Config.showProgress = v));
+                o.add(toggle("Censor lyrics", () -> Config.censorLyrics, v -> Config.censorLyrics = v));
                 o.add(cycle("Position", new Boolean[]{false, true}, () -> Config.barAtBottom, v -> Config.barAtBottom = v, v -> v ? "Bottom" : "Top"));
                 o.add(slider("UI size", 0.5, 2.0, 0.1, Config.uiScale, "x", v -> Config.uiScale = (float) v));
                 o.add(slider("Opacity", 10, 100, 5, Config.uiOpacity, "%", v -> Config.uiOpacity = (int) Math.round(v)));
@@ -219,6 +220,10 @@ public class SettingsScreen extends Screen {
     @Override
     public void onClose() {
         Config.save();
+        if (this.minecraft.player != null) {
+            this.minecraft.player.displayClientMessage(
+                Component.literal("LyricPop settings saved"), true);
+        }
         this.minecraft.setScreen(parent);
     }
 }
