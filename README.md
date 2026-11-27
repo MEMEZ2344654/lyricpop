@@ -14,7 +14,7 @@ Pretty much everything is customizable — colors, size, opacity, position, how 
 - Windows and macOS work with no extra setup
 - Linux needs `playerctl` installed
 - Client-side only
-- Keybinds: Y to toggle lyrics, U to toggle the floating popups, J to open settings
+- Keybinds: Y to toggle lyrics, U to toggle the floating popups, J to open settings (changeable in Controls)
 
 That's pretty much it. Just a fun little mod if you like listening to music while you play.
 
