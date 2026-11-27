@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
+  --ui-font: "Outfit", system-ui, sans-serif;
   --red: #E4000F;
   --purple: #6A1BCB;
   --red-line: #FF2D40;
@@ -26,7 +27,7 @@ body {
   min-height: 100vh;
   background: #000;
   color: #fff;
-  font: 400 16px/1.45 "Outfit", system-ui, sans-serif;
+  font: 400 16px/1.45 var(--ui-font);
   -webkit-font-smoothing: antialiased;
 }
 body::before {
@@ -243,7 +244,13 @@ input[type="range"]::-moz-range-thumb {
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .toast.error { border-color: var(--red-line); }
 
+.fontctl { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; max-width: 430px; padding: 4px; border-radius: 14px; }
+.fontctl.drop { outline: 2px dashed var(--purple-line); outline-offset: 2px; background: rgba(145, 80, 255, 0.12); }
+.fontsel { font: inherit; color: #fff; background: #000; border: 2px solid var(--purple-line); border-radius: 99px; padding: 7px 14px; min-width: 190px; max-width: 100%; cursor: pointer; }
+.fontctl .btn { padding: 6px 16px; font-size: 14.5px; }
+
 @media (max-width: 640px) {
+  .fontctl { justify-content: flex-start; max-width: none; }
   .bubble { padding: 2px 18px 22px; border-radius: 28px 28px 8px 28px; }
   .row { grid-template-columns: 1fr; }
   .sl { grid-template-columns: 1fr 84px; }
@@ -299,7 +306,7 @@ const DEFAULTS = {
   panelActive: "RAINBOW", panelInactive: "WHITE", panelBold: false, panelWordFill: false,
   panelShadow: true, panelBackground: 50,
   worldDistance: 5, worldSpread: 4, worldHeight: 0.5, worldScale: 1, lockToWorld: true, seeThrough: false,
-  syncOffset: 200, censorLyrics: true
+  syncOffset: 200, censorLyrics: true, fontFile: ""
 };
 
 const THEMES = [
@@ -356,7 +363,9 @@ const TABS = [
     toggle("panelBold", "Bold text"),
     toggle("panelWordFill", "Word fill"),
     toggle("panelShadow", "Text shadow"),
-    slider("panelBackground", "Background", 0, 100, 5, "%", { int: true })
+    slider("panelBackground", "Background", 0, 100, 5, "%", { int: true }),
+    { t: "font", k: "fontFile", l: "In-game font", h: "Upload a .ttf or .otf, or drop one here. It is used in game and on this page" },
+    { t: "webfont", l: "Website font", h: "The font this page uses. Falls back to the normal font" }
   ]},
   { id: "world", name: "World", items: [
     slider("worldDistance", "Distance", 2, 15, 0.5, " blocks"),
@@ -459,7 +468,195 @@ function buildSlider(it) {
   return h("div", { class: "sl" }, input, out);
 }
 
-const BUILDERS = { toggle: buildToggle, choice: buildChoice, theme: buildTheme, slider: buildSlider };
+const FONTS_API = "/api/fonts";
+let fonts = [];
+
+const WEB_KEY = "lyricpop.webFont";
+let webFont = "";     // font file the page is using ("" = the normal Outfit font)
+let webFace = null;
+
+function storedWebFont() { try { return localStorage.getItem(WEB_KEY) || ""; } catch (e) { return ""; } }
+function storeWebFont(v) {
+  try { if (v) localStorage.setItem(WEB_KEY, v); else localStorage.removeItem(WEB_KEY); } catch (e) { /* private mode */ }
+}
+
+// Makes every piece of text on this page use the uploaded font. Letters the font doesn't have fall back to Outfit.
+async function applyWebFont(file, quiet) {
+  const root = document.documentElement;
+  if (webFace) { try { document.fonts.delete(webFace); } catch (e) { /* ignore */ } webFace = null; }
+  if (!file) {
+    root.style.removeProperty("--ui-font");
+    webFont = "";
+    storeWebFont("");
+    return true;
+  }
+  try {
+    const face = new FontFace("LyricPopCustom", 'url("' + FONTS_API + "/file?name=" + encodeURIComponent(file) + "&t=" + Date.now() + '")');
+    await face.load();
+    document.fonts.add(face);
+    webFace = face;
+    root.style.setProperty("--ui-font", '"LyricPopCustom", "Outfit", system-ui, sans-serif');
+    webFont = file;
+    storeWebFont(file);
+    return true;
+  } catch (e) {
+    root.style.removeProperty("--ui-font");
+    webFont = "";
+    storeWebFont("");
+    if (!quiet) toast("Couldn’t use that font on this page", true);
+    return false;
+  }
+}
+
+async function resetWebFont() {
+  await applyWebFont("", true);
+  change();
+  toast("Website font reset");
+}
+
+// Resets only the in-game font. Sends just this one setting so any other unsaved changes stay untouched.
+async function resetGameFont() {
+  try {
+    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ fontFile: "" }) });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    setFontSaved("");
+    toast("In-game font reset to Minecraft’s font");
+  } catch (e) {
+    toast("Couldn’t reach the mod. Check that Minecraft is running.", true);
+  }
+}
+
+function buildWebFont(it) {
+  const sel = h("select", { class: "fontsel", "aria-label": it.l }, h("option", { value: "" }, "Normal font"));
+  fonts.forEach(f => sel.append(h("option", { value: f.file }, f.name)));
+  sel.addEventListener("change", async () => { await applyWebFont(sel.value); change(); });
+  const reset = h("button", { type: "button", class: "btn" }, "Reset website font");
+  reset.addEventListener("click", resetWebFont);
+  syncers.push(() => {
+    sel.value = webFont || "";
+    reset.disabled = !webFont;
+  });
+  return h("div", { class: "fontctl" }, sel, reset);
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function loadFonts() {
+  try {
+    const r = await fetch(FONTS_API, { headers: { Accept: "application/json" } });
+    fonts = r.ok ? (await r.json()).fonts : [];
+  } catch (e) {
+    fonts = [];
+  }
+  if (current === "style") renderTab();
+}
+
+// Set the font in the page without marking it as an unsaved change (the mod already saved it).
+function setFontSaved(file) {
+  cfg.fontFile = file;
+  const s = JSON.parse(saved);
+  s.fontFile = file;
+  saved = JSON.stringify(s);
+  change();
+}
+
+async function waitForFont(file) {
+  for (let i = 0; i < 60; i++) {
+    await sleep(1000);
+    try {
+      const r = await fetch(API, { headers: { Accept: "application/json" } });
+      if (r.ok && (await r.json()).fontFile === file) return true;
+    } catch (e) { /* keep waiting */ }
+  }
+  return false;
+}
+
+async function uploadFont(f) {
+  if (!/\.(ttf|otf)$/i.test(f.name)) { toast("Pick a .ttf or .otf font file", true); return; }
+  if (f.size > 10 * 1024 * 1024) { toast("That font is over 10 MB", true); return; }
+  toast("Uploading " + f.name + "…");
+  try {
+    const r = await fetch(FONTS_API + "?name=" + encodeURIComponent(f.name), {
+      method: "POST",
+      headers: { "X-LyricPop": "1", "Content-Type": "application/octet-stream" },
+      body: f
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.error || "HTTP " + r.status);
+    await applyWebFont(j.file);
+    change();
+    toast("Font added. This page uses it now; Minecraft is reloading, give it a few seconds…");
+    const ready = await waitForFont(j.file);
+    await loadFonts();
+    if (ready) { setFontSaved(j.file); toast("Now using " + j.file + " in game and on this page"); }
+    else toast("Font added, but Minecraft hasn’t finished reloading yet.", true);
+  } catch (e) {
+    toast("Couldn’t add that font: " + e.message, true);
+  }
+}
+
+async function removeFont(file) {
+  if (!file || !confirm("Remove " + file + " from your fonts folder?")) return;
+  try {
+    const r = await fetch(FONTS_API + "?name=" + encodeURIComponent(file), { method: "DELETE", headers: { "X-LyricPop": "1" } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    if (webFont === file) await applyWebFont("", true);
+    setFontSaved("");
+    toast("Font removed. Minecraft is reloading…");
+    await loadFonts();
+  } catch (e) {
+    toast("Couldn’t remove that font", true);
+  }
+}
+
+async function openFontFolder() {
+  try {
+    const r = await fetch(FONTS_API + "/open", { method: "POST", headers: { "X-LyricPop": "1" } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+  } catch (e) {
+    toast("Couldn’t open the folder. It’s config/lyricpop/fonts in your Minecraft folder.", true);
+  }
+}
+
+function buildFont(it) {
+  const sel = h("select", { class: "fontsel", "aria-label": it.l }, h("option", { value: "" }, "Minecraft default"));
+  fonts.forEach(f => sel.append(h("option", { value: f.file }, f.name)));
+  sel.addEventListener("change", () => { cfg[it.k] = sel.value; change(); });
+
+  const picker = h("input", { type: "file", accept: ".ttf,.otf", hidden: "" });
+  picker.addEventListener("change", async () => {
+    const f = picker.files[0];
+    picker.value = "";
+    if (f) await uploadFont(f);
+  });
+  const up = h("button", { type: "button", class: "btn" }, "Upload font");
+  up.addEventListener("click", () => picker.click());
+  const del = h("button", { type: "button", class: "btn" }, "Remove file");
+  del.addEventListener("click", () => removeFont(cfg[it.k]));
+  const folder = h("button", { type: "button", class: "btn" }, "Open folder");
+  folder.addEventListener("click", openFontFolder);
+  const reset = h("button", { type: "button", class: "btn" }, "Reset in-game font");
+  reset.addEventListener("click", resetGameFont);
+
+  const wrap = h("div", { class: "fontctl" }, sel, up, reset, del, folder, picker);
+  wrap.addEventListener("dragover", e => { e.preventDefault(); wrap.classList.add("drop"); });
+  wrap.addEventListener("dragleave", () => wrap.classList.remove("drop"));
+  wrap.addEventListener("drop", async e => {
+    e.preventDefault();
+    wrap.classList.remove("drop");
+    const f = e.dataTransfer.files[0];
+    if (f) await uploadFont(f);
+  });
+
+  syncers.push(() => {
+    sel.value = cfg[it.k] || "";
+    del.disabled = !cfg[it.k];
+    reset.disabled = !cfg[it.k];
+  });
+  return wrap;
+}
+
+const BUILDERS = { toggle: buildToggle, choice: buildChoice, theme: buildTheme, slider: buildSlider, font: buildFont, webfont: buildWebFont };
 
 function buildRow(it) {
   if (it.t === "actions") {
@@ -563,6 +760,9 @@ window.addEventListener("beforeunload", e => {
 
 renderTab();
 load();
+loadFonts();
+const savedWebFont = storedWebFont();
+if (savedWebFont) applyWebFont(savedWebFont, true).then(change);
 </script>
 </body>
 </html>

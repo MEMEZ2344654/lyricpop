@@ -74,10 +74,11 @@ final class WorldLyrics {
 
             int alpha = LyricEngine.alpha(t);
             int color = (alpha << 24) | (p.color & 0xFFFFFF);
-            int w = font.width(p.text);
+            net.minecraft.network.chat.Component label = LyricFont.text(p.text, false);
+            int w = font.width(label);
 
             font.drawInBatch(
-                p.text,
+                label,
                 -w / 2f,
                 -4f,
                 color,

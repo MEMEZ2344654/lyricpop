@@ -60,7 +60,7 @@ public final class LyricHud {
     }
 
     private static int wordW(Font font, String word, boolean bold) {
-        return bold ? font.width(Component.literal(word).withStyle(ChatFormatting.BOLD)) : font.width(word);
+        return font.width(LyricFont.text(word, bold));
     }
 
     private static int mix(int a, int b, float t) {
@@ -79,8 +79,8 @@ public final class LyricHud {
         float s = Config.panelScale;
         int wrapW = Math.max(40, (int) (Config.panelWidth / s));
         boolean bold = Config.panelBold;
-        int spaceW = font.width(" ") + (bold ? 1 : 0);
-        int rowH = font.lineHeight + 2;
+        int spaceW = font.width(LyricFont.text(" ", bold));
+        int rowH = font.lineHeight + 2 + (LyricFont.active() ? 3 : 0);
         int gap = 6;
 
         List<Blk> blks = new ArrayList<>();
@@ -147,11 +147,7 @@ public final class LyricHud {
                     if (isCur) col = (Config.panelWordFill && k > wi) ? mid : active;
                     else col = inactive;
                     int argb = (alpha << 24) | (col & 0xFFFFFF);
-                    if (bold) {
-                        g.drawString(font, Component.literal(b.w[k]).withStyle(ChatFormatting.BOLD), x, y, argb, Config.panelShadow);
-                    } else {
-                        g.drawString(font, b.w[k], x, y, argb, Config.panelShadow);
-                    }
+                    g.drawString(font, LyricFont.text(b.w[k], bold), x, y, argb, Config.panelShadow);
                     x += b.ww[k] + spaceW;
                 }
                 y += rowH;
@@ -177,7 +173,7 @@ public final class LyricHud {
         if (Config.showBar) {
             String info = "\u266A " + np.title() + "  \u00B7  " + np.artist() + "  " + fmt(pos) + " / " + fmt(np.durationMs());
             g.fill(0, y, w, y + 13, (bgA << 24));
-            g.drawCenteredString(font, info, w / 2, y + 3, 0xFFE8E0FF);
+            g.drawCenteredString(font, LyricFont.text(info, false), w / 2, y + 3, 0xFFE8E0FF);
             if (Config.showProgress && np.durationMs() > 0) {
                 double frac = Math.max(0, Math.min(1, pos / (double) np.durationMs()));
                 g.fill(0, y + 12, (int) (w * frac), y + 13, accent);
@@ -223,8 +219,8 @@ public final class LyricHud {
             pose.translate(p.sx * sw, p.sy * sh - t * 0.012f * Config.drift, 0);
             pose.mulPose(Axis.ZP.rotationDegrees(p.rot));
             pose.scale(scale, scale, 1f);
-            int tw = font.width(p.text);
-            g.drawString(font, p.text, -tw / 2, -4, (alpha << 24) | p.color, Config.popupShadow);
+            int tw = font.width(LyricFont.text(p.text, false));
+            g.drawString(font, LyricFont.text(p.text, false), -tw / 2, -4, (alpha << 24) | p.color, Config.popupShadow);
             pose.popPose();
         }
     }
@@ -244,21 +240,21 @@ public final class LyricHud {
                 if (i > 0) sb.append(' ');
                 sb.append(line.words().get(i).text());
             }
-            scroll = Math.max(0, font.width(sb.toString()) - avail + 20);
+            scroll = Math.max(0, font.width(LyricFont.text(sb.toString(), false)) - avail + 20);
         }
         int x = tx0 - scroll, ty = y1 + 4;
         if (line == null) {
-            g.drawString(font, text, tx0, ty, 0xFFCFC6F0, false);
+            g.drawString(font, LyricFont.text(text, false), tx0, ty, 0xFFCFC6F0, false);
         } else {
             int hi = (0xC8 << 24) | (accent & 0xFFFFFF);
             for (int i = 0; i < line.words().size(); i++) {
                 String word = line.words().get(i).text();
-                int ww = font.width(word);
+                int ww = font.width(LyricFont.text(word, false));
                 if (i == wi) g.fill(x - 2, ty - 2, x + ww + 2, ty + 10, hi);
-                g.drawString(font, word, x, ty, i <= wi ? 0xFFFFFFFF : 0xFFBDB4D8, false);
-                x += ww + font.width(" ");
+                g.drawString(font, LyricFont.text(word, false), x, ty, i <= wi ? 0xFFFFFFFF : 0xFFBDB4D8, false);
+                x += ww + font.width(LyricFont.text(" ", false));
             }
-            if (!next.isBlank()) g.drawString(font, "  \u00B7  " + next, x, ty, 0xFF6F6890, false);
+            if (!next.isBlank()) g.drawString(font, LyricFont.text("  \u00B7  " + next, false), x, ty, 0xFF6F6890, false);
         }
         g.disableScissor();
     }

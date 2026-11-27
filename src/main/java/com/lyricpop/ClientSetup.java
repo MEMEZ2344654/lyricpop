@@ -10,6 +10,7 @@ import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.gui.overlay.ForgeLayeredDraw;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -20,9 +21,11 @@ final class ClientSetup {
 
     static void init(FMLJavaModLoadingContext ctx) {
         Config.load();
+        LyricFont.rebuild(); // copy fonts from config/lyricpop/fonts into the hidden font pack
         LyricsManager.start();
         SettingsServer.start(); // start the localhost settings page
         IEventBus modBus = ctx.getModEventBus();
+        modBus.addListener((AddPackFindersEvent e) -> LyricFont.addPack(e));
 
         toggle = new KeyMapping("key.lyricpop.toggle", GLFW.GLFW_KEY_Y, "key.categories.lyricpop");
         pops = new KeyMapping("key.lyricpop.floating", GLFW.GLFW_KEY_U, "key.categories.lyricpop");

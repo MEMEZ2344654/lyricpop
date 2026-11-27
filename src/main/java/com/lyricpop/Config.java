@@ -98,6 +98,10 @@ public final class Config {
     /** Replace curse words with first+last letter and stars in the middle. */
     public static boolean censorLyrics = true;
 
+    // ---- font ----
+    /** Name of a font file in config/lyricpop/fonts (empty = Minecraft's normal font). */
+    public static volatile String fontFile = "";
+
     private static final Map<String, Object> DEFAULTS = new HashMap<>();
     static {
         for (Field f : Config.class.getDeclaredFields()) {
@@ -141,6 +145,7 @@ public final class Config {
                     if (t == boolean.class) f.setBoolean(null, e.getAsBoolean());
                     else if (t == int.class) f.setInt(null, e.getAsInt());
                     else if (t == float.class) f.setFloat(null, e.getAsFloat());
+                    else if (t == String.class) f.set(null, e.getAsString());
                     else if (t.isEnum()) {
                         for (Object c : t.getEnumConstants()) {
                             if (((Enum<?>) c).name().equals(e.getAsString())) f.set(null, c);
@@ -169,6 +174,7 @@ public final class Config {
                 if (t == boolean.class) o.addProperty(f.getName(), f.getBoolean(null));
                 else if (t == int.class) o.addProperty(f.getName(), f.getInt(null));
                 else if (t == float.class) o.addProperty(f.getName(), f.getFloat(null));
+                else if (t == String.class) o.addProperty(f.getName(), String.valueOf(f.get(null)));
                 else if (t.isEnum()) o.addProperty(f.getName(), ((Enum<?>) f.get(null)).name());
             } catch (Exception ignored) { }
         }
@@ -185,6 +191,7 @@ public final class Config {
                 if (t == boolean.class) f.setBoolean(null, e.getAsBoolean());
                 else if (t == int.class) f.setInt(null, e.getAsInt());
                 else if (t == float.class) f.setFloat(null, e.getAsFloat());
+                    else if (t == String.class) f.set(null, e.getAsString());
                 else if (t.isEnum()) {
                     for (Object c : t.getEnumConstants()) {
                         if (((Enum<?>) c).name().equals(e.getAsString())) {

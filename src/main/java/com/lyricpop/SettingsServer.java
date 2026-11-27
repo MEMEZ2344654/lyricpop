@@ -12,6 +12,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.file.Files;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Executors;
 
@@ -34,6 +36,7 @@ public final class SettingsServer {
             server = HttpServer.create(new InetSocketAddress("127.0.0.1", PORT), 0);
             server.createContext("/", SettingsServer::handleRoot);
             server.createContext("/api/config", SettingsServer::handleConfig);
+            server.createContext("/api/fonts", SettingsServer::handleFonts);
             server.setExecutor(Executors.newSingleThreadExecutor(r -> {
                 Thread t = new Thread(r, "LyricPop-Web");
                 t.setDaemon(true);
@@ -133,6 +136,145 @@ public final class SettingsServer {
         }
 
         send(ex, 405, "text/plain", "Method not allowed");
+    }
+
+    // ---------- fonts ----------
+    // These endpoints deliberately send no CORS headers and only accept requests that come from the
+    // settings page itself, so other websites can't add or delete fonts.
+
+    private static void handleFonts(HttpExchange ex) throws IOException {
+        String method = ex.getRequestMethod();
+        String path = ex.getRequestURI().getPath();
+
+        if ("GET".equalsIgnoreCase(method) && "/api/fonts".equals(path)) {
+            JsonArray arr = new JsonArray();
+            for (String f : LyricFont.files()) {
+                JsonObject o = new JsonObject();
+                o.addProperty("file", f);
+                o.addProperty("name", f.substring(0, f.lastIndexOf('.')));
+                arr.add(o);
+            }
+            JsonObject out = new JsonObject();
+            out.add("fonts", arr);
+            sendLocal(ex, 200, out);
+            return;
+        }
+
+        // The settings page loads the chosen font from here so it can use it for its own text.
+        // No CORS headers, so other websites can't read it.
+        if ("GET".equalsIgnoreCase(method) && "/api/fonts/file".equals(path)) {
+            String name = queryParam(ex, "name");
+            if (name == null || !LyricFont.files().contains(name)) {
+                sendLocal(ex, 404, error("No such font"));
+                return;
+            }
+            byte[] bytes = Files.readAllBytes(LyricFont.fontsDir().resolve(name));
+            ex.getResponseHeaders().set("Content-Type", name.toLowerCase(java.util.Locale.ROOT).endsWith(".otf") ? "font/otf" : "font/ttf");
+            ex.getResponseHeaders().set("Cache-Control", "no-cache");
+            ex.sendResponseHeaders(200, bytes.length);
+            try (OutputStream os = ex.getResponseBody()) {
+                os.write(bytes);
+            }
+            return;
+        }
+
+        if (!fromSettingsPage(ex)) {
+            sendLocal(ex, 403, error("Not allowed"));
+            return;
+        }
+
+        try {
+            if ("POST".equalsIgnoreCase(method) && "/api/fonts".equals(path)) {
+                String len = ex.getRequestHeaders().getFirst("Content-Length");
+                if (len != null && Long.parseLong(len) > LyricFont.MAX_BYTES) {
+                    sendLocal(ex, 413, error("That font is over 10 MB"));
+                    return;
+                }
+                byte[] data = ex.getRequestBody().readNBytes(LyricFont.MAX_BYTES + 1);
+                final String file = LyricFont.saveFont(queryParam(ex, "name"), data);
+                // Switch to the new font only after Minecraft has reloaded, so we never draw a font that isn't loaded yet.
+                LyricFont.reloadThen(() -> {
+                    Config.fontFile = file;
+                    Config.save();
+                });
+                JsonObject o = new JsonObject();
+                o.addProperty("ok", true);
+                o.addProperty("file", file);
+                sendLocal(ex, 200, o);
+                return;
+            }
+
+            if ("DELETE".equalsIgnoreCase(method) && "/api/fonts".equals(path)) {
+                String name = queryParam(ex, "name");
+                if (name != null && name.equals(Config.fontFile)) {
+                    Config.fontFile = "";
+                    Config.save();
+                }
+                if (!LyricFont.deleteFont(name)) {
+                    sendLocal(ex, 404, error("No such font"));
+                    return;
+                }
+                LyricFont.reloadThen(() -> { });
+                sendLocal(ex, 200, ok());
+                return;
+            }
+
+            if ("POST".equalsIgnoreCase(method) && "/api/fonts/open".equals(path)) {
+                Files.createDirectories(LyricFont.fontsDir());
+                try {
+                    Desktop.getDesktop().open(LyricFont.fontsDir().toFile());
+                } catch (Exception e) {
+                    sendLocal(ex, 500, error("Could not open the folder: " + LyricFont.fontsDir()));
+                    return;
+                }
+                sendLocal(ex, 200, ok());
+                return;
+            }
+
+            sendLocal(ex, 404, error("Not found"));
+        } catch (Exception e) {
+            sendLocal(ex, 400, error(String.valueOf(e.getMessage())));
+        }
+    }
+
+    private static boolean fromSettingsPage(HttpExchange ex) {
+        if (!"1".equals(ex.getRequestHeaders().getFirst("X-LyricPop"))) return false;
+        String origin = ex.getRequestHeaders().getFirst("Origin");
+        if (origin == null) return true;
+        return origin.equals("http://localhost:" + PORT) || origin.equals("http://127.0.0.1:" + PORT);
+    }
+
+    private static String queryParam(HttpExchange ex, String key) {
+        String q = ex.getRequestURI().getRawQuery();
+        if (q == null) return null;
+        for (String part : q.split("&")) {
+            int eq = part.indexOf('=');
+            if (eq > 0 && part.substring(0, eq).equals(key)) {
+                return URLDecoder.decode(part.substring(eq + 1), StandardCharsets.UTF_8);
+            }
+        }
+        return null;
+    }
+
+    private static JsonObject ok() {
+        JsonObject o = new JsonObject();
+        o.addProperty("ok", true);
+        return o;
+    }
+
+    private static JsonObject error(String message) {
+        JsonObject o = new JsonObject();
+        o.addProperty("error", message);
+        return o;
+    }
+
+    private static void sendLocal(HttpExchange ex, int code, JsonObject body) throws IOException {
+        byte[] bytes = GSON.toJson(body).getBytes(StandardCharsets.UTF_8);
+        ex.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
+        ex.sendResponseHeaders(code, bytes.length);
+        try (OutputStream os = ex.getResponseBody()) {
+            os.write(bytes);
+        }
     }
 
     private static void addCors(HttpExchange ex) {
