@@ -17,3 +17,8 @@ Pretty much everything is customizable — colors, size, opacity, position, how 
 - Keybinds: Y to toggle lyrics, U to toggle the floating popups, J to open settings
 
 That's pretty much it. Just a fun little mod if you like listening to music while you play.
+
+
+( this mod was inspired to me by Lyrics By QQID and Melodify By aqys )
+https://www.curseforge.com/minecraft/mc-mods/lyrics
+https://modrinth.com/mod/melodify
