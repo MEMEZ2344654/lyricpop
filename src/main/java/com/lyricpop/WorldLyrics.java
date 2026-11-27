@@ -8,26 +8,33 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
-import org.joml.Vector3f;
+import org.joml.Quaternionf;
 
-/** Draws popup words as floating text inside the 3D world. */
+/**
+ * Draws popup words as real 3D text in the world.
+ * You can walk around and through them.
+ */
 final class WorldLyrics {
     private static final int FULL_BRIGHT = 15728880;
 
     static void render(RenderLevelStageEvent e) {
         if (e.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
         if (!Config.enabled || !Config.popups || Config.mode == Config.Mode.SCREEN) return;
+
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || LyricEngine.POPS.isEmpty()) return;
 
         Camera cam = e.getCamera();
-        Vec3 c = cam.getPosition();
-        Vector3f look = cam.getLookVector();
-        Vector3f left = cam.getLeftVector();
-        Vector3f up = cam.getUpVector();
+        Vec3 camPos = cam.getPosition();
         Font font = mc.font;
         MultiBufferSource.BufferSource buf = mc.renderBuffers().bufferSource();
         Font.DisplayMode mode = Config.seeThrough ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL;
+
+        PoseStack ps = e.getPoseStack();
+        ps.pushPose();
+
+        // Move into camera-relative space (standard world rendering)
+        ps.translate(-camPos.x, -camPos.y, -camPos.z);
 
         for (LyricEngine.Pop p : LyricEngine.POPS) {
             if (!p.world) continue;
@@ -36,28 +43,55 @@ final class WorldLyrics {
 
             double x, y, z;
             if (Config.lockToWorld) {
-                x = p.wx; y = p.wy; z = p.wz;
+                // Fixed world position — you can walk through it
+                x = p.wx;
+                y = p.wy + t * 0.0006 * Config.drift;
+                z = p.wz;
             } else {
-                x = c.x + look.x() * p.od + left.x() * p.ox + up.x() * p.oy;
-                y = c.y + look.y() * p.od + left.y() * p.ox + up.y() * p.oy;
-                z = c.z + look.z() * p.od + left.z() * p.ox + up.z() * p.oy;
+                // Follows the camera (old behaviour)
+                var look = cam.getLookVector();
+                var left = cam.getLeftVector();
+                var up = cam.getUpVector();
+                x = camPos.x + look.x() * p.od + left.x() * p.ox + up.x() * p.oy;
+                y = camPos.y + look.y() * p.od + left.y() * p.ox + up.y() * p.oy + t * 0.0006 * Config.drift;
+                z = camPos.z + look.z() * p.od + left.z() * p.ox + up.z() * p.oy;
             }
-            y += t * 0.0006 * Config.drift;
 
-            float s = 0.012f * p.od * p.size * Config.popupScale * Config.worldScale * LyricEngine.back(t);
-            int alpha = LyricEngine.alpha(t);
+            ps.pushPose();
+            ps.translate(x, y, z);
 
-            PoseStack ps = new PoseStack();
-            ps.mulPose(e.getProjectionMatrix());
-            ps.translate(x - c.x, y - c.y, z - c.z);
-            ps.mulPose(cam.rotation());
+            // Billboard — always face the camera
+            Quaternionf rot = new Quaternionf(cam.rotation());
+            ps.mulPose(rot);
+
+            // Slight random tilt
             ps.mulPose(Axis.ZP.rotationDegrees(p.rot));
+
+            // Scale (negative Y so text is upright)
+            float s = 0.025f * p.size * Config.popupScale * Config.worldScale * LyricEngine.back(t);
             ps.scale(s, -s, s);
 
+            int alpha = LyricEngine.alpha(t);
+            int color = (alpha << 24) | (p.color & 0xFFFFFF);
             int w = font.width(p.text);
-            font.drawInBatch(p.text, -w / 2f, -4f, (alpha << 24) | p.color, Config.popupShadow,
-                    ps.last().pose(), buf, mode, 0, FULL_BRIGHT);
+
+            font.drawInBatch(
+                p.text,
+                -w / 2f,
+                -4f,
+                color,
+                Config.popupShadow,
+                ps.last().pose(),
+                buf,
+                mode,
+                0,
+                FULL_BRIGHT
+            );
+
+            ps.popPose();
         }
+
         buf.endBatch();
+        ps.popPose();
     }
 }
