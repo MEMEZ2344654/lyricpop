@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[52.1.2,)"
+loaderVersion="[52,)"
 license="MIT"
 
 [[mods]]
@@ -11,7 +11,7 @@ description='''Popup synced lyrics for whatever song is playing on your computer
 [[dependencies.lyricpop]]
 modId="forge"
 mandatory=true
-versionRange="[52,)"
+versionRange="[52.1.2,)"
 ordering="NONE"
 side="CLIENT"
 

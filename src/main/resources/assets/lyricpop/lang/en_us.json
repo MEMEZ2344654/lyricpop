@@ -1,4 +1,7 @@
 {
   "key.lyricpop.toggle": "Toggle lyrics",
-  "key.lyricpop.floating": "Toggle popup words"
+  "key.lyricpop.floating": "Toggle popup lyrics",
+  "key.lyricpop.settings": "Open lyric settings",
+  "key.lyricpop.earlier": "Lyrics earlier (+100 ms)",
+  "key.lyricpop.later": "Lyrics later (-100 ms)"
 }

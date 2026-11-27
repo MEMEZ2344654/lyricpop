@@ -8,6 +8,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 @Mod("lyricpop")
 public class LyricPopMod {
     public LyricPopMod(FMLJavaModLoadingContext context) {
-        if (FMLEnvironment.dist == Dist.CLIENT) ClientSetup.init(context.getModEventBus());
+        if (FMLEnvironment.dist == Dist.CLIENT) ClientSetup.init(context);
     }
 }
