@@ -23,11 +23,11 @@ final class ClientSetup {
         LyricsManager.start();
         IEventBus modBus = ctx.getModEventBus();
 
-        toggle = new KeyMapping("key.lyricpop.toggle", GLFW.GLFW_KEY_Y, "key.categories.misc");
-        pops = new KeyMapping("key.lyricpop.floating", GLFW.GLFW_KEY_U, "key.categories.misc");
-        settings = new KeyMapping("key.lyricpop.settings", GLFW.GLFW_KEY_O, "key.categories.misc");
-        earlier = new KeyMapping("key.lyricpop.earlier", GLFW.GLFW_KEY_RIGHT_BRACKET, "key.categories.misc");
-        later = new KeyMapping("key.lyricpop.later", GLFW.GLFW_KEY_LEFT_BRACKET, "key.categories.misc");
+        toggle = new KeyMapping("key.lyricpop.toggle", GLFW.GLFW_KEY_Y, "key.categories.lyricpop");
+        pops = new KeyMapping("key.lyricpop.floating", GLFW.GLFW_KEY_U, "key.categories.lyricpop");
+        settings = new KeyMapping("key.lyricpop.settings", GLFW.GLFW_KEY_J, "key.categories.lyricpop");
+        earlier = new KeyMapping("key.lyricpop.earlier", GLFW.GLFW_KEY_RIGHT_BRACKET, "key.categories.lyricpop");
+        later = new KeyMapping("key.lyricpop.later", GLFW.GLFW_KEY_LEFT_BRACKET, "key.categories.lyricpop");
 
         modBus.addListener((RegisterKeyMappingsEvent e) -> {
             e.register(toggle);

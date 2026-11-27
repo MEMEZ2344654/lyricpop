@@ -45,14 +45,14 @@ public final class Config {
     // ---- general / layout ----
     public static boolean enabled = true;
     public static boolean showBar = true;
-    public static boolean showPill = true;
+    public static boolean showPill = false;
     public static boolean showNextLine = true;
     public static boolean showProgress = true;
     public static boolean barAtBottom = false;
-    public static float uiScale = 1.0f;
-    public static int uiOpacity = 80;
+    public static float uiScale = 0.6f;
+    public static int uiOpacity = 50;
     public static int pillWidth = 300;
-    public static Theme accent = Theme.LAVENDER;
+    public static Theme accent = Theme.RAINBOW;
 
     // ---- popups ----
     public static boolean popups = true;
@@ -69,18 +69,18 @@ public final class Config {
     // ---- on-screen lyrics panel (Spotify style) ----
     public static Layout screenLayout = Layout.PANEL;
     public static Corner panelCorner = Corner.TOP_LEFT;
-    public static int panelLines = 7;
-    public static int panelPast = 1;
-    public static float panelScale = 1.3f;
-    public static int panelWidth = 220;
-    public static int panelMarginX = 10;
-    public static int panelMarginY = 40;
-    public static Theme panelActive = Theme.WHITE;
-    public static Theme panelInactive = Theme.GRAY;
-    public static boolean panelBold = true;
+    public static int panelLines = 6;
+    public static int panelPast = 0;
+    public static float panelScale = 0.7f;
+    public static int panelWidth = 150;
+    public static int panelMarginX = 2;
+    public static int panelMarginY = 200;
+    public static Theme panelActive = Theme.RAINBOW;
+    public static Theme panelInactive = Theme.WHITE;
+    public static boolean panelBold = false;
     public static boolean panelWordFill = false;
     public static boolean panelShadow = true;
-    public static int panelBackground = 0;
+    public static int panelBackground = 50;
 
     // ---- world mode ----
     public static float worldDistance = 5.0f;
