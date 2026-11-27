@@ -13,7 +13,7 @@ Pretty much everything is customizable — colors, size, opacity, position, how 
 **Notes**
 - Windows and macOS work with no extra setup
 - Linux needs `playerctl` installed
-- Client-side only (Forge 1.21.1)
+- Client-side only
 - Keybinds: Y to toggle lyrics, U to toggle the floating popups, J to open settings
 
 That's pretty much it. Just a fun little mod if you like listening to music while you play.
