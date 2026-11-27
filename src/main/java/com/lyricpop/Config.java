@@ -153,18 +153,48 @@ public final class Config {
 
     public static void save() {
         try {
-            JsonObject o = new JsonObject();
-            for (Field f : Config.class.getDeclaredFields()) {
-                if (!tunable(f)) continue;
+            JsonObject o = toJson();
+            Files.createDirectories(path().getParent());
+            Files.writeString(path(), new GsonBuilder().setPrettyPrinting().create().toJson(o));
+        } catch (Exception ignored) { }
+    }
+
+    /** Used by the browser settings page. */
+    public static JsonObject toJson() {
+        JsonObject o = new JsonObject();
+        for (Field f : Config.class.getDeclaredFields()) {
+            if (!tunable(f)) continue;
+            try {
                 Class<?> t = f.getType();
                 if (t == boolean.class) o.addProperty(f.getName(), f.getBoolean(null));
                 else if (t == int.class) o.addProperty(f.getName(), f.getInt(null));
                 else if (t == float.class) o.addProperty(f.getName(), f.getFloat(null));
                 else if (t.isEnum()) o.addProperty(f.getName(), ((Enum<?>) f.get(null)).name());
-            }
-            Files.createDirectories(path().getParent());
-            Files.writeString(path(), new GsonBuilder().setPrettyPrinting().create().toJson(o));
-        } catch (Exception ignored) { }
+            } catch (Exception ignored) { }
+        }
+        return o;
+    }
+
+    /** Used by the browser settings page. */
+    public static void fromJson(JsonObject o) {
+        for (Field f : Config.class.getDeclaredFields()) {
+            if (!tunable(f) || !o.has(f.getName())) continue;
+            Class<?> t = f.getType();
+            JsonElement e = o.get(f.getName());
+            try {
+                if (t == boolean.class) f.setBoolean(null, e.getAsBoolean());
+                else if (t == int.class) f.setInt(null, e.getAsInt());
+                else if (t == float.class) f.setFloat(null, e.getAsFloat());
+                else if (t.isEnum()) {
+                    for (Object c : t.getEnumConstants()) {
+                        if (((Enum<?>) c).name().equals(e.getAsString())) {
+                            f.set(null, c);
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception ignored) { }
+        }
     }
 
     static int hsv(float h, float s, float v) {

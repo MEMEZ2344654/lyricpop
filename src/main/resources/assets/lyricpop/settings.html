@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LyricPop settings</title>
+<link rel="icon" href="data:image/jpeg;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #E4000F;
+  --purple: #6A1BCB;
+  --red-line: #FF2D40;
+  --purple-line: #9150FF;
+  --line: linear-gradient(135deg, var(--red-line), var(--purple-line));
+  --fill: linear-gradient(135deg, var(--red), var(--purple));
+  --dim: rgba(255, 255, 255, 0.74);
+  --rule: rgba(145, 80, 255, 0.3);
+}
+* { box-sizing: border-box; }
+html { background: #000; color-scheme: dark; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+  font: 400 16px/1.45 "Outfit", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 45% at 6% 0%, rgba(228, 0, 15, 0.16), transparent 70%),
+    radial-gradient(60% 45% at 100% 100%, rgba(106, 27, 203, 0.2), transparent 70%);
+}
+button { font: inherit; color: #fff; }
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.app { position: relative; max-width: 800px; margin: 0 auto; padding: 32px 20px 72px; }
+
+.top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand img { width: 56px; height: 56px; mix-blend-mode: screen; }
+h1 { margin: 0; font-size: 30px; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; }
+.brand p { margin: 2px 0 0; color: var(--dim); font-size: 14px; }
+
+.status { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); }
+.status[data-state="online"] .dot { background: var(--purple-line); box-shadow: 0 0 10px var(--purple-line); }
+.status[data-state="offline"] .dot { background: var(--red-line); box-shadow: 0 0 10px var(--red-line); }
+.status button { display: none; padding: 4px 14px; font-size: 13.5px; }
+.status[data-state="offline"] button { display: inline-block; }
+
+.btn {
+  font-weight: 600;
+  border-radius: 99px;
+  padding: 10px 24px;
+  cursor: pointer;
+  border: 2px solid var(--purple-line);
+  background: transparent;
+  transition: background 0.15s, filter 0.15s;
+}
+.btn:hover { background: rgba(145, 80, 255, 0.2); }
+.btn.primary { border-color: transparent; background: var(--fill); }
+.btn.primary:hover { filter: brightness(1.18); }
+.btn:disabled { opacity: 0.38; cursor: not-allowed; filter: none; }
+.btn:disabled:hover { background: transparent; }
+.btn.primary:disabled:hover { background: var(--fill); }
+
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 18px; }
+.tab {
+  padding: 8px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 99px;
+  border: 2px solid rgba(145, 80, 255, 0.55);
+  background: #000;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.tab:hover { border-color: var(--purple-line); }
+.tab[aria-selected="true"] {
+  border-color: transparent;
+  background: var(--fill);
+  font-weight: 600;
+  box-shadow: 0 0 22px rgba(228, 0, 15, 0.3);
+}
+
+.bubble {
+  border: 2px solid transparent;
+  border-radius: 36px 36px 8px 36px;
+  background: linear-gradient(#000, #000) padding-box, var(--line) border-box;
+  padding: 6px 32px 26px;
+  box-shadow: -8px -8px 48px rgba(228, 0, 15, 0.14), 8px 8px 48px rgba(106, 27, 203, 0.22);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 28px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.row.actions { display: flex; flex-wrap: wrap; gap: 10px; border-bottom: 0; padding-top: 22px; }
+.label { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.name { font-size: 16px; font-weight: 500; }
+.hint { font-size: 13.5px; color: var(--dim); }
+.hint:empty { display: none; }
+
+.switch {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  padding: 0;
+  border-radius: 99px;
+  border: 2px solid var(--purple-line);
+  background: #000;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+.switch[aria-checked="true"] { background: var(--fill); border-color: transparent; }
+.switch[aria-checked="true"]::after { transform: translateX(22px); }
+
+.seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  border: 2px solid var(--purple-line);
+  border-radius: 99px;
+}
+.seg button {
+  padding: 6px 15px;
+  font-size: 14.5px;
+  border: 0;
+  border-radius: 99px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.seg button:hover { background: rgba(255, 255, 255, 0.12); }
+.seg button[aria-pressed="true"] { background: var(--fill); font-weight: 600; }
+.seg.grid { display: grid; grid-template-columns: 1fr 1fr; border-radius: 22px; }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 9px; justify-content: flex-end; max-width: 300px; }
+.swatch {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #000;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+.swatch:hover { transform: scale(1.12); }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px #fff; }
+
+.sl { display: grid; grid-template-columns: 260px 96px; align-items: center; gap: 14px; }
+output { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"]:focus-visible { border-radius: 99px; }
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--red-line), var(--purple-line)) left center / var(--p, 0%) 100% no-repeat, rgba(255, 255, 255, 0.22);
+}
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--red-line), var(--purple-line)) left center / var(--p, 0%) 100% no-repeat, rgba(255, 255, 255, 0.22);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px #000, 0 0 0 5px var(--purple-line), 0 0 14px rgba(145, 80, 255, 0.7);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 3px #000, 0 0 0 5px var(--purple-line), 0 0 14px rgba(145, 80, 255, 0.7);
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding-top: 22px;
+  border-top: 1px solid var(--rule);
+}
+.foot .right { display: flex; align-items: center; gap: 16px; }
+.unsaved { font-size: 14px; color: var(--dim); }
+.unsaved[hidden] { display: none; }
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translate(-50%, 16px);
+  padding: 10px 22px;
+  border: 2px solid var(--purple-line);
+  border-radius: 99px;
+  background: #000;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.error { border-color: var(--red-line); }
+
+@media (max-width: 640px) {
+  .bubble { padding: 2px 18px 22px; border-radius: 28px 28px 8px 28px; }
+  .row { grid-template-columns: 1fr; }
+  .sl { grid-template-columns: 1fr 84px; }
+  .swatches { justify-content: flex-start; max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <img src="data:image/jpeg;base64,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" alt="LyricPop logo">
+      <div>
+        <h1>LyricPop</h1>
+        <p>Settings</p>
+      </div>
+    </div>
+    <div class="status" id="status" data-state="loading">
+      <span class="dot"></span>
+      <span id="statusText">Connecting to the mod</span>
+      <button class="btn" id="retry" type="button">Retry</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Settings sections"></nav>
+
+  <main class="bubble">
+    <div id="panel" role="tabpanel"></div>
+    <div class="foot">
+      <button class="btn" id="reset" type="button">Reset all</button>
+      <div class="right">
+        <span class="unsaved" id="unsaved" hidden>Unsaved changes</span>
+        <button class="btn primary" id="save" type="button" disabled>Save changes</button>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const API = "http://localhost:28765/api/config";
+
+const DEFAULTS = {
+  enabled: true, showBar: true, showPill: false, showNextLine: true, showProgress: true,
+  barAtBottom: false, uiScale: 0.6, uiOpacity: 50, pillWidth: 300, accent: "RAINBOW",
+  popups: true, mode: "SCREEN", style: "WORD", popupColor: "LAVENDER", popupScale: 1,
+  popupLifetime: 1800, maxPopups: 14, tilt: 12, drift: 1, popupShadow: true,
+  screenLayout: "PANEL", panelCorner: "TOP_LEFT", panelLines: 6, panelPast: 0, panelScale: 0.7,
+  panelWidth: 150, panelMarginX: 2, panelMarginY: 200,
+  panelActive: "RAINBOW", panelInactive: "WHITE", panelBold: false, panelWordFill: false,
+  panelShadow: true, panelBackground: 50,
+  worldDistance: 5, worldSpread: 4, worldHeight: 0.5, worldScale: 1, lockToWorld: true, seeThrough: false,
+  syncOffset: 200, censorLyrics: true
+};
+
+const THEMES = [
+  ["LAVENDER", "Lavender", "#B9A8FF"], ["PINK", "Pink", "#FF9ED8"], ["CYAN", "Cyan", "#7FE7FF"],
+  ["MINT", "Mint", "#8CF2B0"], ["GOLD", "Gold", "#FFD76A"], ["WHITE", "White", "#FFFFFF"],
+  ["GRAY", "Gray", "#9A9A9A"], ["RED", "Red", "#FF6B6B"], ["RAINBOW", "Rainbow", null]
+];
+const RAINBOW = "conic-gradient(#ff4d4d, #ffd24d, #7dff7d, #4dd2ff, #7d4dff, #ff4dd2, #ff4d4d)";
+
+const slider = (k, l, min, max, step, unit, extra = {}) => ({ t: "slider", k, l, min, max, step, unit, ...extra });
+const toggle = (k, l, h) => ({ t: "toggle", k, l, h });
+const theme = (k, l) => ({ t: "theme", k, l });
+const choice = (k, l, o, extra = {}) => ({ t: "choice", k, l, o, ...extra });
+
+const TABS = [
+  { id: "display", name: "Display", items: [
+    toggle("enabled", "Lyrics"),
+    toggle("showBar", "Song bar"),
+    toggle("showPill", "Lyric pill"),
+    toggle("showNextLine", "Next line"),
+    toggle("showProgress", "Progress line"),
+    toggle("censorLyrics", "Censor lyrics", "Swaps curse words for their first and last letters"),
+    choice("barAtBottom", "Position", [[false, "Top"], [true, "Bottom"]]),
+    slider("uiScale", "UI size", 0.5, 2, 0.1, "x"),
+    slider("uiOpacity", "Opacity", 10, 100, 5, "%", { int: true }),
+    slider("pillWidth", "Pill width", 150, 500, 10, "", { int: true }),
+    theme("accent", "Accent")
+  ]},
+  { id: "popups", name: "Popups", items: [
+    toggle("popups", "Popup lyrics"),
+    choice("mode", "Show", [["SCREEN", "On screen"], ["WORLD", "In the world"], ["BOTH", "Both"]]),
+    choice("style", "Style", [["WORD", "Word by word"], ["LINE", "Full line"]]),
+    theme("popupColor", "Color"),
+    slider("popupScale", "Size", 0.5, 3, 0.1, "x"),
+    slider("popupLifetime", "Lifetime", 800, 5000, 100, " ms", { int: true }),
+    slider("maxPopups", "Max at once", 3, 30, 1, "", { int: true }),
+    slider("tilt", "Tilt", 0, 45, 1, "°", { int: true }),
+    slider("drift", "Float speed", 0, 3, 0.1, "x"),
+    toggle("popupShadow", "Text shadow")
+  ]},
+  { id: "screen", name: "Screen", items: [
+    choice("screenLayout", "Layout", [["PANEL", "Spotify style"], ["FLOATING", "Floating words"]]),
+    choice("panelCorner", "Corner", [["TOP_LEFT", "Top left"], ["TOP_RIGHT", "Top right"], ["BOTTOM_LEFT", "Bottom left"], ["BOTTOM_RIGHT", "Bottom right"]], { grid: true }),
+    slider("panelLines", "Lines shown", 3, 11, 1, "", { int: true }),
+    slider("panelPast", "Past lines", 0, 3, 1, "", { int: true }),
+    slider("panelScale", "Text size", 0.6, 3, 0.1, "x"),
+    slider("panelWidth", "Width", 100, 400, 10, "", { int: true }),
+    slider("panelMarginX", "Edge gap", 0, 200, 2, "", { int: true }),
+    slider("panelMarginY", "Top/bottom gap", 0, 200, 2, "", { int: true })
+  ]},
+  { id: "style", name: "Style", items: [
+    theme("panelActive", "Current line"),
+    theme("panelInactive", "Other lines"),
+    toggle("panelBold", "Bold text"),
+    toggle("panelWordFill", "Word fill"),
+    toggle("panelShadow", "Text shadow"),
+    slider("panelBackground", "Background", 0, 100, 5, "%", { int: true })
+  ]},
+  { id: "world", name: "World", items: [
+    slider("worldDistance", "Distance", 2, 15, 0.5, " blocks"),
+    slider("worldSpread", "Spread", 0, 12, 0.5, " blocks"),
+    slider("worldHeight", "Height", -3, 4, 0.25, " blocks"),
+    slider("worldScale", "Size", 0.3, 3, 0.1, "x"),
+    toggle("lockToWorld", "Stay in world"),
+    toggle("seeThrough", "Through walls")
+  ]},
+  { id: "sync", name: "Sync", items: [
+    slider("syncOffset", "Timing offset", -3000, 3000, 50, " ms", { int: true, h: "Positive numbers show lyrics earlier" }),
+    { t: "actions", a: [
+      ["Reset offset", () => { cfg.syncOffset = 200; }],
+      ["Lyrics earlier +100", () => { cfg.syncOffset = Math.min(3000, cfg.syncOffset + 100); }],
+      ["Lyrics later −100", () => { cfg.syncOffset = Math.max(-3000, cfg.syncOffset - 100); }]
+    ]}
+  ]}
+];
+
+const h = (tag, props = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) e.setAttribute(k, v);
+  for (const c of kids.flat()) e.append(c);
+  return e;
+};
+
+const $ = id => document.getElementById(id);
+const panel = $("panel");
+const tabsEl = $("tabs");
+const saveBtn = $("save");
+
+let cfg = { ...DEFAULTS };
+let saved = JSON.stringify(cfg);
+let online = false;
+let current = TABS[0].id;
+const syncers = [];
+
+function change() {
+  syncers.forEach(fn => fn());
+  updateFooter();
+}
+
+function updateFooter() {
+  const dirty = JSON.stringify(cfg) !== saved;
+  $("unsaved").hidden = !dirty;
+  saveBtn.disabled = !dirty || !online;
+}
+
+function buildToggle(it) {
+  const b = h("button", { type: "button", class: "switch", role: "switch", "aria-label": it.l });
+  b.addEventListener("click", () => { cfg[it.k] = !cfg[it.k]; change(); });
+  syncers.push(() => b.setAttribute("aria-checked", String(!!cfg[it.k])));
+  return b;
+}
+
+function buildChoice(it) {
+  const wrap = h("div", { class: "seg" + (it.grid ? " grid" : ""), role: "group", "aria-label": it.l });
+  const btns = it.o.map(([v, t]) => {
+    const b = h("button", { type: "button" }, t);
+    b.addEventListener("click", () => { cfg[it.k] = v; change(); });
+    wrap.append(b);
+    return [v, b];
+  });
+  syncers.push(() => btns.forEach(([v, b]) => b.setAttribute("aria-pressed", String(cfg[it.k] === v))));
+  return wrap;
+}
+
+function buildTheme(it, hint) {
+  const wrap = h("div", { class: "swatches", role: "group", "aria-label": it.l });
+  const btns = THEMES.map(([v, n, c]) => {
+    const b = h("button", { type: "button", class: "swatch", title: n, "aria-label": n });
+    b.style.background = c || RAINBOW;
+    b.addEventListener("click", () => { cfg[it.k] = v; change(); });
+    wrap.append(b);
+    return [v, n, b];
+  });
+  syncers.push(() => btns.forEach(([v, n, b]) => {
+    const on = cfg[it.k] === v;
+    b.setAttribute("aria-pressed", String(on));
+    if (on) hint.textContent = n;
+  }));
+  return wrap;
+}
+
+function buildSlider(it) {
+  const dec = it.int ? 0 : (String(it.step).split(".")[1] || "").length;
+  const input = h("input", { type: "range", min: it.min, max: it.max, step: it.step, "aria-label": it.l });
+  const out = h("output");
+  input.addEventListener("input", () => {
+    const v = Number(input.value);
+    cfg[it.k] = it.int ? Math.round(v) : Number(v.toFixed(dec));
+    change();
+  });
+  syncers.push(() => {
+    const v = Number(cfg[it.k]);
+    input.value = v;
+    input.style.setProperty("--p", ((v - it.min) / (it.max - it.min)) * 100 + "%");
+    out.textContent = v.toFixed(dec) + it.unit;
+  });
+  return h("div", { class: "sl" }, input, out);
+}
+
+const BUILDERS = { toggle: buildToggle, choice: buildChoice, theme: buildTheme, slider: buildSlider };
+
+function buildRow(it) {
+  if (it.t === "actions") {
+    const r = h("div", { class: "row actions" });
+    it.a.forEach(([text, fn]) => {
+      const b = h("button", { type: "button", class: "btn" }, text);
+      b.addEventListener("click", () => { fn(); change(); });
+      r.append(b);
+    });
+    return r;
+  }
+  const hint = h("span", { class: "hint" }, it.h || "");
+  const control = BUILDERS[it.t](it, hint);
+  return h("div", { class: "row" }, h("div", { class: "label" }, h("span", { class: "name" }, it.l), hint), control);
+}
+
+function renderTab() {
+  syncers.length = 0;
+  panel.replaceChildren();
+  const tab = TABS.find(t => t.id === current);
+  tab.items.forEach(it => panel.append(buildRow(it)));
+  panel.setAttribute("aria-labelledby", "tab-" + current);
+  tabsEl.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.id === current)));
+  change();
+}
+
+TABS.forEach(t => {
+  const b = h("button", { type: "button", class: "tab", role: "tab", id: "tab-" + t.id, "data-id": t.id }, t.name);
+  b.addEventListener("click", () => { current = t.id; renderTab(); });
+  tabsEl.append(b);
+});
+
+function setStatus(state) {
+  online = state === "online";
+  $("status").dataset.state = state;
+  $("statusText").textContent = {
+    loading: "Connecting to the mod",
+    online: "Connected to the mod",
+    offline: "Mod not reachable"
+  }[state];
+}
+
+async function load() {
+  setStatus("loading");
+  try {
+    const r = await fetch(API, { headers: { Accept: "application/json" } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    cfg = { ...DEFAULTS, ...(await r.json()) };
+    setStatus("online");
+  } catch (e) {
+    cfg = { ...DEFAULTS };
+    setStatus("offline");
+  }
+  saved = JSON.stringify(cfg);
+  change();
+}
+
+let toastTimer;
+function toast(msg, isError = false) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.toggle("error", isError);
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+async function save() {
+  if (saveBtn.disabled) return;
+  saveBtn.disabled = true;
+  try {
+    const r = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cfg)
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    saved = JSON.stringify(cfg);
+    toast("Settings saved");
+  } catch (e) {
+    toast("Couldn’t save. Check that Minecraft is running.", true);
+  }
+  updateFooter();
+}
+
+$("save").addEventListener("click", save);
+$("retry").addEventListener("click", load);
+$("reset").addEventListener("click", () => {
+  cfg = { ...cfg, ...DEFAULTS };
+  change();
+});
+window.addEventListener("keydown", e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    save();
+  }
+});
+window.addEventListener("beforeunload", e => {
+  if (JSON.stringify(cfg) !== saved) e.preventDefault();
+});
+
+renderTab();
+load();
+</script>
+</body>
+</html>

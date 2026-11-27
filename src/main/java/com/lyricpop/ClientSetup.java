@@ -21,6 +21,7 @@ final class ClientSetup {
     static void init(FMLJavaModLoadingContext ctx) {
         Config.load();
         LyricsManager.start();
+        SettingsServer.start(); // start the localhost settings page
         IEventBus modBus = ctx.getModEventBus();
 
         toggle = new KeyMapping("key.lyricpop.toggle", GLFW.GLFW_KEY_Y, "key.categories.lyricpop");
@@ -49,7 +50,10 @@ final class ClientSetup {
         MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent.Post e) -> onTick());
 
         ctx.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> new SettingsScreen(parent)));
+                () -> new ConfigScreenHandler.ConfigScreenFactory((mc, parent) -> {
+                    SettingsServer.openInBrowser();
+                    return parent; // stay on the previous screen, browser opens instead
+                }));
     }
 
     private static void msg(Minecraft mc, String text) {
@@ -69,7 +73,8 @@ final class ClientSetup {
             msg(mc, "Popup lyrics " + (Config.popups ? "on" : "off"));
         }
         while (settings.consumeClick()) {
-            mc.setScreen(new SettingsScreen(null));
+            SettingsServer.openInBrowser();
+            msg(mc, "Opened LyricPop settings in browser");
         }
         while (earlier.consumeClick()) {
             Config.syncOffset = Math.min(3000, Config.syncOffset + 100);
