@@ -30,10 +30,11 @@ final class WorldLyrics {
         MultiBufferSource.BufferSource buf = mc.renderBuffers().bufferSource();
         Font.DisplayMode mode = Config.seeThrough ? Font.DisplayMode.SEE_THROUGH : Font.DisplayMode.NORMAL;
 
-        PoseStack ps = e.getPoseStack();
+        // Create our own PoseStack (getPoseStack() returns Matrix4f on this Forge version)
+        PoseStack ps = new PoseStack();
         ps.pushPose();
 
-        // Move into camera-relative space (standard world rendering)
+        // Move into camera-relative space
         ps.translate(-camPos.x, -camPos.y, -camPos.z);
 
         for (LyricEngine.Pop p : LyricEngine.POPS) {
@@ -48,7 +49,7 @@ final class WorldLyrics {
                 y = p.wy + t * 0.0006 * Config.drift;
                 z = p.wz;
             } else {
-                // Follows the camera (old behaviour)
+                // Follows the camera
                 var look = cam.getLookVector();
                 var left = cam.getLeftVector();
                 var up = cam.getUpVector();
